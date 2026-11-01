@@ -111,6 +111,9 @@ function $ToolBox(tools, is_extras) {
 			if (e.button != null && e.button !== 0) {
 				return;
 			}
+			// Stop the parent component from treating this as a panel-drag start
+			// (on ChromeOS Linux this was causing screen-darken + drag instead of tool select)
+			e.stopPropagation();
 			pointer_down_pos = { x: e.clientX, y: e.clientY };
 			$b.addClass("tool-pressed");
 		});
