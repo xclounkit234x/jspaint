@@ -1,0 +1,119 @@
+/*
+ * Modern polish layer for JS Paint (Huge Upgrade)
+ * Softens the classic UI without breaking layout or tool behavior.
+ * Loaded after themes. Uses system font stack + optional Google Fonts.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+	--upgrade-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--upgrade-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	--upgrade-radius: 6px;
+	--upgrade-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+	--upgrade-accent: #2563eb;
+}
+
+body,
+.jspaint,
+.menu-button,
+.menu-item,
+.status-area,
+.window-title,
+.os-window {
+	font-family: var(--upgrade-font);
+}
+
+/* Slightly airier menu bar */
+.menus {
+	gap: 2px;
+}
+.menu-button {
+	border-radius: 4px;
+	min-height: 28px;
+	padding-left: 12px;
+	padding-right: 12px;
+	transition: background-color 0.12s ease, color 0.12s ease;
+	cursor: pointer;
+	touch-action: manipulation;
+}
+.menu-button:hover,
+.menu-button.highlight {
+	filter: brightness(1.05);
+}
+.menu-button.active {
+	filter: brightness(0.95);
+}
+
+/* Menu popup: softer corners + shadow */
+.menu-popup {
+	border-radius: var(--upgrade-radius);
+	box-shadow: var(--upgrade-shadow);
+}
+
+.menu-item {
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+/* Tools: clearer hover/active */
+.tools .tool {
+	border-radius: 4px;
+	cursor: pointer;
+	touch-action: manipulation;
+	transition: filter 0.1s ease, outline-color 0.1s ease;
+}
+.tools .tool:hover {
+	filter: brightness(1.06);
+}
+.tools .tool.tool-pressed {
+	filter: brightness(0.9);
+}
+.tools .tool.selected {
+	outline: 2px solid var(--upgrade-accent);
+	outline-offset: -2px;
+}
+
+/* Status bar readability */
+.status-area {
+	font-size: 12px;
+	letter-spacing: 0.01em;
+}
+
+/* Windows / dialogs */
+.os-window {
+	border-radius: 8px;
+	box-shadow: var(--upgrade-shadow);
+	overflow: hidden;
+}
+.os-window .window-titlebar {
+	font-weight: 500;
+}
+
+/* Color swatches */
+.color-button {
+	border-radius: 2px;
+	cursor: pointer;
+	touch-action: manipulation;
+}
+
+/* Focus visibility for keyboard */
+.menu-button:focus-visible,
+.tools .tool:focus-visible,
+.color-button:focus-visible {
+	outline: 2px solid var(--upgrade-accent);
+	outline-offset: 1px;
+}
+
+/* Coarse pointers: bigger targets */
+@media (pointer: coarse), (hover: none) {
+	.menu-button {
+		min-height: 36px;
+		padding-left: 14px;
+		padding-right: 14px;
+	}
+	.tools .tool {
+		min-width: 36px;
+		min-height: 36px;
+	}
+}

@@ -24,6 +24,7 @@
 
 	<!-- Huge Upgrade: touch targets + ChromeOS pointer fixes -->
 	<link href="styles/upgrade-overrides.css" rel="stylesheet" type="text/css">
+	<link href="styles/modern-polish.css" rel="stylesheet" type="text/css">
 
 	<link rel="apple-touch-icon" href="images/icons/apple-icon-180x180.png">
 	<link rel="shortcut icon" href="favicon.ico">
@@ -54,10 +55,6 @@
 
 <script src="lib/jquery-3.4.1.min.js"></script>
 	<script src="lib/gif.js/gif.js"></script>
-	<!--
-		IO libraries should be required based on file formats available.
-		Could do dynamic import() but then need to handle errors for offline use.
-	-->
 	<script src="lib/pako-2.0.3.min.js"></script>
 	<script src="lib/UPNG.js"></script>
 	<script src="lib/UTIF.js"></script>
@@ -72,24 +69,14 @@
 	<script src="lib/os-gui/$Window.js"></script>
 	<script src="lib/os-gui/MenuBar.js"></script>
 	<script src="lib/imagetracer_v1.2.5.js"></script>
-	<!--
-		Note: this must not be type="module" because localization is done with inline <script>s
-	-->
 	<script src="src/app-localization.js"></script>
-	<!--
-		Note: this must not be deferred, as it is depended on by menus.js for undo/redo
-	-->
 	<script type="module" src="src/msgbox.js"></script>
 	<script type="module" src="src/functions.js"></script>
 	<script type="module" src="src/helpers.js"></script>
 	<script type="module" src="src/storage.js"></script>
 	<script type="module" src="src/$Component.js"></script>
 	<script type="module" src="src/$ToolWindow.js"></script>
-	<!--
-		This must come after $Window.js, as it depends on $FormWindow (via $ToolWindow?)
-	-->
 	<script type="module" src="src/error-handling-enhanced.js"></script>
-
 	<script type="module" src="src/$ToolBox.js"></script>
 	<script type="module" src="src/$ColorBox.js"></script>
 	<script type="module" src="src/$FontBox.js"></script>
