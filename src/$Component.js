@@ -111,8 +111,6 @@ function $Component(title, className, orientation, $el) {
 		const enabled = $("body").hasClass("enlarge-ui");
 
 		// Temporarily disable the transform to measure the unscaled size
-		// (Previously used scrollWidth/scrollHeight, which is naturally unaffected by the scale,
-		// but that is affected by the advent calendar style tool button flaps in the Winter theme.)
 		$c.css("transform", "none");
 
 		// Measure the untransformed size
@@ -131,11 +129,6 @@ function $Component(title, className, orientation, $el) {
 			);
 		}
 		const props = {
-			// The `transform` breaks the overflow of the Winter theme's tool button flaps, but what are you going to do?
-			// Well, `zIndex: 2` or higher seems to fix it, probably competing with the .main-canvas's z-index of 2,
-			// but causes other problems, like depth ordering with the floating undo button,
-			// and there's probably a reason for the .main-canvas having that z-index, and I don't really want to play z-index wack-a-mole.
-			// zIndex: 2, // @#: z-index
 			transform: `scale(${scale})`,
 			transformOrigin: "0 0",
 			marginRight: containerWidth * (scale - 1),
@@ -155,7 +148,6 @@ function $Component(title, className, orientation, $el) {
 	const update_auto_scaling = () => {
 		clearInterval(iid);
 		if ($("body").hasClass("enlarge-ui")) {
-			// @TODO: don't use an interval for this!
 			iid = setInterval(apply_scale, 200);
 		}
 		apply_scale();
@@ -200,9 +192,7 @@ function $Component(title, className, orientation, $el) {
 		});
 
 		const total_available_length = pos_axis === "top" ? $dock_to.height() : $dock_to.width();
-		// console.log("before adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
 		adjust_segments(segments, total_available_length);
-		// console.log("after adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
 
 		apply_segments($dock_to[0], pos_axis, segments);
 
@@ -232,9 +222,7 @@ function $Component(title, className, orientation, $el) {
 		});
 
 		const total_available_length = pos_axis === "top" ? $(component_area_el).height() : $(component_area_el).width();
-		// console.log("before adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
 		adjust_segments(segments, total_available_length);
-		// console.log("after adjustment", JSON.stringify(segments, (_key,val)=> (val instanceof Element) ? val.className : val));
 		apply_segments(component_area_el, pos_axis, segments);
 	};
 
@@ -247,9 +235,6 @@ function $Component(title, className, orientation, $el) {
 		return {
 			width: `calc(${styles.width} * ${scale})`,
 			height: `calc(${styles.height} * ${scale})`,
-			// don't copy margin, margin is actually used for positioning the components in the docking areas
-			// don't copy padding, padding changes based on whether the component is in a window in modern theme
-			// let padding be influenced by CSS
 		};
 	};
 	const imagine_window_dimensions = () => {
@@ -321,13 +306,23 @@ function $Component(title, className, orientation, $el) {
 		}
 	};
 	$c.add($w.$titlebar).on("pointerdown", (e) => {
-		// Only start a drag via a left click directly on the component element or titlebar
+		// Only start a drag via a left click on empty component chrome or titlebar —
+		// never on interactive controls (tools, colors, options). ChromeOS/Linux was
+		// treating tool presses as panel drags (screen darkens, ghost follows pointer).
 		if (e.button !== 0) { return; }
+
+		const $t = $(e.target);
+		// Interactive children must never initiate a component drag
+		if ($t.closest(".tool, .tool-icon, .tool-options, .color-button, .swatch, .color-selection, .current-colors, .palette, button, input, select, textarea, a, [role=button]").length) {
+			return;
+		}
+
 		const validTarget =
 			$c.is(e.target) ||
+			$t.closest($c).length > 0 && $t.closest(".tools, .tool-options, .color-box, .palette").length === 0 ||
 			(
-				$(e.target).closest($w.$titlebar).length > 0 &&
-				$(e.target).closest("button").length === 0
+				$t.closest($w.$titlebar).length > 0 &&
+				$t.closest("button").length === 0
 			);
 		if (!validTarget) { return; }
 
@@ -342,20 +337,40 @@ function $Component(title, className, orientation, $el) {
 		ox2 = rect.left - offsetLeft - e.clientX;
 		oy2 = rect.top - offsetTop - e.clientY;
 
-		$("body").addClass("dragging");
-		$("body").css({ cursor: "default" }).addClass("cursor-bully");
+		// Require a real drag (movement threshold) before dimming the UI / showing ghost.
+		// A simple click/tap should not enter dragging mode at all.
+		const startX = e.clientX;
+		const startY = e.clientY;
+		let drag_armed = false;
+		const DRAG_THRESHOLD_PX = 6;
 
-		$G.on("pointermove", drag_update_position);
-		$G.one("pointerup", (e) => {
-			$G.off("pointermove", drag_update_position);
-			drag_onpointerup(e);
+		const maybe_arm_drag = (ev) => {
+			if (drag_armed) {
+				drag_update_position(ev);
+				return;
+			}
+			const dx = ev.clientX - startX;
+			const dy = ev.clientY - startY;
+			if (dx * dx + dy * dy < DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX) {
+				return;
+			}
+			drag_armed = true;
+			$("body").addClass("dragging");
+			$("body").css({ cursor: "default" }).addClass("cursor-bully");
+			render_ghost(ev);
+			drag_update_position(ev);
+		};
+
+		$G.on("pointermove", maybe_arm_drag);
+		$G.one("pointerup", (ev) => {
+			$G.off("pointermove", maybe_arm_drag);
+			if (drag_armed) {
+				drag_onpointerup(ev);
+			}
 			$("body").removeClass("dragging");
 			$("body").css({ cursor: "" }).removeClass("cursor-bully");
 			$canvas.trigger("pointerleave"); // prevent magnifier preview showing until you move the mouse
 		});
-
-		render_ghost(e);
-		drag_update_position(e);
 
 		// Prevent text selection anywhere within the component
 		e.preventDefault();
@@ -474,4 +489,3 @@ function $Component(title, className, orientation, $el) {
 }
 
 export { $Component };
-
