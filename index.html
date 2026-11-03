@@ -1,10 +1,8 @@
 <!doctype html>
 <html lang="en">
-
 <head>
 	<meta charset="utf-8">
-	<title>JS Paint — Void Neon</title>
-
+	<title>JS Paint — Void Liquid Glass</title>
 	<meta http-equiv="Content-Security-Policy" content="
 		default-src 'self';
 		script-src 'self' blob: https://cdn.jsdelivr.net https://jspaint.firebaseio.com https://www.youtube.com;
@@ -14,50 +12,40 @@
 		font-src 'self' https://fonts.gstatic.com;
 		connect-src * data: blob: https://jspaint.firebaseio.com wss://jspaint.firebaseio.com;
 	">
-
 	<link href="styles/normalize.css" rel="stylesheet" type="text/css">
 	<link href="styles/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
 	<link href="styles/print.css" rel="stylesheet" type="text/css" media="print">
 	<link href="lib/os-gui/build/layout.css" class="flippable-layout-stylesheet" rel="stylesheet" type="text/css">
 	<link href="lib/tracky-mouse/core/tracky-mouse.css" rel="stylesheet" type="text/css">
 	<link href="lib/98.css/98.custom-build.css" class="flippable-layout-stylesheet not-for-modern" rel="stylesheet" type="text/css">
-
 	<link href="styles/upgrade-overrides.css" rel="stylesheet" type="text/css">
 	<link href="styles/void-neon.css" rel="stylesheet" type="text/css">
-
 	<link rel="apple-touch-icon" href="images/icons/apple-icon-180x180.png">
 	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="manifest" href="manifest.webmanifest">
-	<meta name="msapplication-TileColor" content="#05060a">
-	<meta name="theme-color" content="#05060a">
+	<meta name="theme-color" content="#03040a">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<meta name="description" content="JS Paint — Void Neon dark UI" />
-
 	<script src="src/error-handling-basic.js"></script>
 	<script type="module" src="src/theme.js"></script>
 	<script>
 		try {
-			if (!localStorage.getItem("jspaint theme")) {
-				localStorage.setItem("jspaint theme", "modern-dark.css");
-			}
+			localStorage.setItem("jspaint theme", "modern-dark.css");
+			localStorage.setItem("jspaint disable seasonal theme", "true");
 		} catch (e) {}
 	</script>
 </head>
-
 <body class="void-neon">
 	<div id="about-paint" style="display: none">
 		<div id="about-paint-header">
 			<img src="images/icons/128x128.png" width="128" height="128" id="about-paint-icon" alt="" />
 			<div id="about-paint-beside-icon">
 				<h1 id="jspaint-project-name">JS Paint</h1>
-				<div id="jspaint-version">Void Neon</div>
+				<div id="jspaint-version">Void Liquid Glass</div>
 			</div>
 		</div>
-		<p>Dark polished UI — blood red / deep blue accents.</p>
 	</div>
 	<div id="news" hidden></div>
-
-<script src="lib/jquery-3.4.1.min.js"></script>
+	<script src="lib/jquery-3.4.1.min.js"></script>
 	<script src="lib/gif.js/gif.js"></script>
 	<script src="lib/pako-2.0.3.min.js"></script>
 	<script src="lib/UPNG.js"></script>
@@ -108,11 +96,6 @@
 	<script type="module" src="src/sessions.js"></script>
 	<script type="module" src="src/konami.js"></script>
 	<script type="module" src="src/vaporwave-fun.js"></script>
-
-	<noscript>
-		<h1>JS Paint</h1>
-		<p>This application requires JavaScript to run.</p>
-	</noscript>
+	<script src="src/void-extras.js"></script>
 </body>
-
 </html>
