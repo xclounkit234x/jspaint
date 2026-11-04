@@ -1,147 +1,147 @@
-/* VOID LIQUID GLASS — see repo for full theme */
+/* VOID LIQUID GLASS v2 — heavier glows, dark scrollbars, soft edges */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 :root {
-	--void-bg: #03040a;
-	--void-text: #f2f4f8;
-	--void-muted: #9aa3b5;
+	--void-bg: #02030a;
+	--void-text: #f4f6fb;
+	--void-muted: #9aa6c0;
 	--void-red: #c41e3a;
-	--void-blue-glow: #4d8cff;
+	--void-blue-glow: #5b9bff;
 	--void-font: "Inter", system-ui, -apple-system, sans-serif;
-	--lg-blur: 28px;
-	--lg-radius: 18px;
-	--lg-radius-sm: 12px;
-	--lg-spec: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.25);
-	--lg-shadow: 0 10px 40px rgba(0,0,0,0.45), 0 0 0 0.5px rgba(255,255,255,0.12);
-	--void-border: rgba(255,255,255,0.12);
+	--lg-blur: 32px;
+	--lg-radius: 20px;
+	--lg-radius-sm: 14px;
+	--lg-spec: inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(0,0,0,0.3);
+	--lg-shadow: 0 12px 48px rgba(0,0,0,0.55), 0 0 0 0.5px rgba(255,255,255,0.14);
+	--void-border: rgba(255,255,255,0.14);
 }
 html, body, .jspaint {
-	background: radial-gradient(ellipse at 30% 20%, #0a1228 0%, var(--void-bg) 55%, #000 100%) !important;
+	background: radial-gradient(ellipse at 30% 15%, #0b1530 0%, var(--void-bg) 50%, #000 100%) !important;
 	color: var(--void-text) !important;
 	font-family: var(--void-font) !important;
 }
+* { scrollbar-width: thin; scrollbar-color: #3d5a9a #0a0c14; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: #0a0c14; border-radius: 10px; box-shadow: inset 0 0 8px rgba(0,0,0,0.6); }
+*::-webkit-scrollbar-thumb {
+	background: linear-gradient(180deg, #4d7cff, #c41e3a);
+	border-radius: 10px;
+	box-shadow: 0 0 12px rgba(77,140,255,0.55);
+	border: 2px solid #0a0c14;
+}
+*::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(180deg, #6d9bff, #ff2a55);
+	box-shadow: 0 0 18px rgba(255,42,85,0.5);
+}
+*::-webkit-scrollbar-corner { background: #0a0c14; }
 .lg, .menus, .component-area, .status-area, .menu-popup, .os-window,
-.tools-component, .colors-component, .tool-options {
-	background: linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04) 40%, rgba(20,30,60,0.35)) !important;
-	backdrop-filter: blur(var(--lg-blur)) saturate(160%) !important;
-	-webkit-backdrop-filter: blur(var(--lg-blur)) saturate(160%) !important;
+.tools-component, .colors-component, .tool-options, #void-color-extras {
+	background: linear-gradient(160deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04) 42%, rgba(18,28,55,0.4)) !important;
+	backdrop-filter: blur(var(--lg-blur)) saturate(170%) !important;
+	-webkit-backdrop-filter: blur(var(--lg-blur)) saturate(170%) !important;
 	border: 1px solid var(--void-border) !important;
-	box-shadow: var(--lg-shadow), var(--lg-spec), 0 0 40px rgba(26, 79, 255, 0.12) !important;
+	box-shadow: var(--lg-shadow), var(--lg-spec), 0 0 50px rgba(26, 79, 255, 0.18) !important;
 	border-radius: var(--lg-radius) !important;
 }
 body::before {
-	content: "";
-	pointer-events: none;
-	position: fixed;
-	inset: 0;
-	z-index: 99998;
-	opacity: 0.22;
-	background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(30, 80, 255, 0.22) 3px, rgba(30, 80, 255, 0.22) 4px, transparent 4px, transparent 7px, rgba(0, 0, 0, 0.55) 7px, rgba(0, 0, 0, 0.55) 8px);
-	animation: void-scan 6s linear infinite;
-	mix-blend-mode: screen;
+	content: ""; pointer-events: none !important; position: fixed; inset: 0; z-index: 99998; opacity: 0.28;
+	background: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(40, 100, 255, 0.28) 2px, rgba(40, 100, 255, 0.28) 3px, transparent 3px, transparent 6px, rgba(0, 0, 0, 0.65) 6px, rgba(0, 0, 0, 0.65) 7px);
+	animation: void-scan 5.5s linear infinite; mix-blend-mode: screen;
 }
 body::after {
-	content: "";
-	pointer-events: none;
-	position: fixed;
-	inset: 0;
-	z-index: 99997;
-	opacity: 0.55;
-	background: radial-gradient(ellipse at 50% -10%, rgba(26, 79, 255, 0.28), transparent 50%), radial-gradient(ellipse at 90% 110%, rgba(196, 30, 58, 0.2), transparent 45%), radial-gradient(ellipse at 10% 80%, rgba(0, 0, 0, 0.5), transparent 40%);
+	content: ""; pointer-events: none !important; position: fixed; inset: 0; z-index: 99997; opacity: 0.65;
+	background: radial-gradient(ellipse at 50% -10%, rgba(40,100,255,0.35), transparent 48%), radial-gradient(ellipse at 90% 110%, rgba(196,30,58,0.28), transparent 42%), radial-gradient(ellipse at 10% 80%, rgba(0,0,0,0.55), transparent 40%);
 }
-@keyframes void-scan { 0% { background-position: 0 0; } 100% { background-position: 0 120px; } }
-body, .jspaint, .menu-button, .menu-item, .status-area, .status-text, .status-coordinates, .window-title, .os-window, label, button, input, select {
-	text-shadow: 0 0 6px rgba(77, 140, 255, 0.45), 0 0 14px rgba(77, 140, 255, 0.2), 0 1px 2px rgba(0,0,0,0.8) !important;
+@keyframes void-scan { 0% { background-position: 0 0; } 100% { background-position: 0 140px; } }
+body, .jspaint, .menu-button, .menu-item, .status-area, .status-text, .status-coordinates, .window-title, .os-window, label, button, input, select, a {
+	text-shadow: 0 0 8px rgba(91, 155, 255, 0.65), 0 0 18px rgba(91, 155, 255, 0.35), 0 0 28px rgba(196, 30, 58, 0.12), 0 1px 2px rgba(0,0,0,0.9) !important;
 	color: var(--void-text) !important;
 }
-.menus, .component, .component-area, .status-area, .tool, .menu-button, .menu-item, .menu-popup, .os-window, .window-titlebar, .color-button, button, input, select, textarea, .tool-options {
+.menus, .component, .component-area, .status-area, .tool, .menu-button, .menu-item, .menu-popup, .os-window, .color-button, button, input, select, textarea, .tool-options {
 	border-radius: var(--lg-radius-sm) !important;
 }
-.os-window, .menu-popup, .component-area { border-radius: var(--lg-radius) !important; }
-.menus { margin: 6px !important; padding: 4px 8px !important; gap: 4px; display: flex; align-items: center; }
+.os-window, .menu-popup, .component-area, .tools-component, .colors-component { border-radius: var(--lg-radius) !important; }
+.menus { margin: 8px !important; padding: 6px 10px !important; gap: 6px; display: flex; align-items: center; }
 .menu-button {
-	min-height: 32px; padding: 6px 14px !important; cursor: pointer; touch-action: manipulation;
-	background: rgba(255,255,255,0.06) !important; border: 1px solid transparent !important;
-	transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.2), box-shadow 0.18s ease, background 0.18s ease;
+	min-height: 34px; padding: 6px 16px !important; cursor: pointer; touch-action: manipulation;
+	background: rgba(255,255,255,0.07) !important; border: 1px solid transparent !important;
+	transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.15), box-shadow 0.18s ease, background 0.18s ease;
 }
 .menu-button:hover, .menu-button.highlight {
-	background: rgba(77, 140, 255, 0.2) !important;
-	box-shadow: 0 0 20px rgba(77, 140, 255, 0.35), var(--lg-spec) !important;
-	transform: scale(1.04);
+	background: rgba(91, 155, 255, 0.22) !important;
+	box-shadow: 0 0 28px rgba(91, 155, 255, 0.5), var(--lg-spec) !important;
+	transform: scale(1.05);
 }
 .menu-button.active {
-	background: rgba(196, 30, 58, 0.28) !important;
-	box-shadow: 0 0 24px rgba(196, 30, 58, 0.45), var(--lg-spec) !important;
-	transform: scale(1.05);
-}
-.menu-popup { padding: 8px !important; min-width: 200px; }
-.menu-item { padding: 8px 12px !important; cursor: pointer; transition: background 0.12s ease, transform 0.12s ease; }
-.menu-item:hover, .menu-item.highlight {
-	background: rgba(77, 140, 255, 0.22) !important;
-	box-shadow: inset 0 0 0 1px rgba(77, 140, 255, 0.35);
-	transform: translateX(2px);
-}
-.tools-component, .component.tools-component { padding: 8px !important; margin: 6px !important; }
-.tools .tool {
-	position: relative; overflow: visible !important;
-	border: 1px solid transparent !important; outline: none !important; box-shadow: none !important;
-	background: rgba(255,255,255,0.05) !important; margin: 3px !important;
-	width: 36px !important; height: 36px !important;
-	transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-.tools .tool:hover {
-	background: rgba(168, 176, 196, 0.12) !important;
-	box-shadow: 0 0 16px rgba(168, 176, 196, 0.25) !important;
+	background: rgba(196, 30, 58, 0.32) !important;
+	box-shadow: 0 0 32px rgba(196, 30, 58, 0.55), var(--lg-spec) !important;
 	transform: scale(1.06);
 }
+.menu-popup { padding: 10px !important; min-width: 220px; z-index: 100000 !important; }
+.menu-item { padding: 10px 14px !important; cursor: pointer; touch-action: manipulation; }
+.menu-item:hover, .menu-item.highlight {
+	background: rgba(91, 155, 255, 0.25) !important;
+	box-shadow: inset 0 0 0 1px rgba(91, 155, 255, 0.45), 0 0 16px rgba(91,155,255,0.25);
+	transform: translateX(3px);
+}
+.tools-component, .component.tools-component {
+	display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
+	align-items: flex-start !important; height: auto !important; min-height: 280px;
+	overflow: visible !important; padding: 10px !important; margin: 8px !important;
+}
+.tools { display: flex !important; flex-flow: column wrap !important; max-height: 340px; width: 52px !important; }
+.tools .tool {
+	position: relative; overflow: visible !important; border: 1px solid transparent !important; outline: none !important;
+	background: rgba(255,255,255,0.06) !important; margin: 3px !important;
+	width: 38px !important; height: 38px !important; border-radius: 12px !important;
+}
+.tools .tool:hover { background: rgba(168, 176, 196, 0.14) !important; box-shadow: 0 0 20px rgba(168, 176, 196, 0.35) !important; transform: scale(1.08); }
 .tools .tool.selected {
-	outline: none !important;
-	border: 1px solid rgba(196, 30, 58, 0.7) !important;
-	background: rgba(196, 30, 58, 0.18) !important;
-	box-shadow: 0 0 0 2px rgba(196, 30, 58, 0.25), 0 0 18px rgba(196, 30, 58, 0.55) !important;
-	transform: scale(1.05);
+	outline: none !important; border: 1px solid rgba(196, 30, 58, 0.8) !important;
+	background: rgba(196, 30, 58, 0.22) !important;
+	box-shadow: 0 0 0 2px rgba(196, 30, 58, 0.3), 0 0 24px rgba(196, 30, 58, 0.65) !important;
 }
 .tools .tool::before, .tools .tool::after, .tools .tool.selected::before, .tools .tool.selected::after {
-	display: none !important; content: none !important; box-shadow: none !important; border: none !important;
+	display: none !important; content: none !important;
 }
-.colors-component { padding: 10px !important; margin: 6px !important; min-height: 120px; }
+.tool-options {
+	display: flex !important; flex-direction: column !important; margin-top: 0 !important; margin-left: 12px !important;
+	width: 76px !important; min-width: 76px !important; height: auto !important; min-height: 76px; padding: 10px !important;
+	z-index: 6 !important; border-radius: 16px !important; border: 1px solid rgba(91,155,255,0.4) !important;
+	box-shadow: 0 0 28px rgba(91,155,255,0.3), 0 10px 30px rgba(0,0,0,0.5) !important;
+}
+.colors-component { padding: 12px !important; margin: 8px !important; min-height: 130px; }
 .color-button {
-	width: 22px !important; height: 22px !important; margin: 2px !important;
-	border-radius: 8px !important;
-	box-shadow: 0 0 0 1px rgba(255,255,255,0.15), 0 2px 6px rgba(0,0,0,0.4) !important;
+	width: 24px !important; height: 24px !important; margin: 2px !important; border-radius: 10px !important;
+	box-shadow: 0 0 0 1px rgba(255,255,255,0.18), 0 0 10px rgba(91,155,255,0.2) !important;
 }
-.color-button:hover { transform: scale(1.15); box-shadow: 0 0 14px rgba(77, 140, 255, 0.55) !important; }
-#void-color-extras {
-	display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; margin: 6px;
-	border-radius: var(--lg-radius) !important;
-}
-#void-color-extras label {
-	font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--void-muted) !important;
-}
-#void-color-extras input[type="range"] { width: 100%; accent-color: var(--void-blue-glow); }
+.color-button:hover { transform: scale(1.18); box-shadow: 0 0 18px rgba(91, 155, 255, 0.65) !important; }
+#void-color-extras { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; margin: 8px; }
 #void-palette-load, #void-history-open {
-	cursor: pointer; padding: 8px 12px; border-radius: 999px !important;
-	background: rgba(77, 140, 255, 0.15) !important; border: 1px solid rgba(77, 140, 255, 0.4) !important;
-	color: #fff !important; font-weight: 600; box-shadow: 0 0 16px rgba(77, 140, 255, 0.25);
+	cursor: pointer; padding: 10px 14px; border-radius: 999px !important;
+	background: rgba(91, 155, 255, 0.18) !important; border: 1px solid rgba(91, 155, 255, 0.5) !important;
+	color: #fff !important; font-weight: 600; box-shadow: 0 0 22px rgba(91, 155, 255, 0.35); touch-action: manipulation;
 }
 .canvas-area {
-	background: #06080f !important; border-radius: var(--lg-radius) !important; margin: 6px !important;
-	box-shadow: inset 0 0 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(77,140,255,0.15) !important;
+	background: #05070f !important; border-radius: var(--lg-radius) !important; margin: 8px !important;
+	box-shadow: inset 0 0 70px rgba(0,0,0,0.75), 0 0 0 1px rgba(91,155,255,0.2) !important;
 }
 .os-window .window-titlebar {
-	background: linear-gradient(90deg, rgba(196,30,58,0.35), rgba(26,79,255,0.3)) !important;
+	background: linear-gradient(90deg, rgba(196,30,58,0.4), rgba(26,79,255,0.35)) !important;
 	border-bottom: 1px solid var(--void-border) !important; font-weight: 600 !important;
 }
 .os-window button {
-	border-radius: 999px !important; padding: 6px 14px !important;
-	background: rgba(255,255,255,0.08) !important; border: 1px solid var(--void-border) !important; cursor: pointer;
+	border-radius: 999px !important; padding: 8px 16px !important;
+	background: rgba(255,255,255,0.1) !important; border: 1px solid var(--void-border) !important;
+	cursor: pointer; touch-action: manipulation;
 }
 input, select, textarea {
-	background: rgba(0,0,0,0.35) !important; border: 1px solid var(--void-border) !important;
-	border-radius: 10px !important; color: var(--void-text) !important;
+	background: rgba(0,0,0,0.45) !important; border: 1px solid var(--void-border) !important;
+	border-radius: 12px !important; color: var(--void-text) !important;
 }
 @media (pointer: coarse) {
-	.menu-button { min-height: 40px; }
-	.tools .tool { width: 44px !important; height: 44px !important; }
-	.color-button { width: 28px !important; height: 28px !important; }
+	.menu-button { min-height: 42px; }
+	.tools .tool { width: 46px !important; height: 46px !important; }
+	.color-button { width: 30px !important; height: 30px !important; }
+	.menu-item { padding: 14px 16px !important; }
 }
 @media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
