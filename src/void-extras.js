@@ -1,4 +1,4 @@
-// Void extras: alpha, large palette (always visible), history, tool-options layout
+// Void extras: alpha, large palette, history, tool-options layout (bottom)
 (function () {
 	"use strict";
 	function whenReady(fn) {
@@ -141,12 +141,29 @@
 		if (document.getElementById("void-tool-options-layout")) return;
 		var css = document.createElement("style");
 		css.id = "void-tool-options-layout";
-		css.textContent = ".tools-component,.component.tools-component{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:flex-start!important;height:auto!important;min-height:280px;width:auto!important;overflow:visible!important}.tools-component .tools,.tools{display:flex!important;flex-flow:column wrap!important;max-height:320px;width:52px!important}.tools-component .tool-options,.tool-options{display:flex!important;flex-direction:column!important;margin-top:0!important;margin-left:10px!important;width:72px!important;min-width:72px!important;height:auto!important;min-height:72px;padding:8px!important;position:relative!important;z-index:5!important;background:linear-gradient(160deg,rgba(255,255,255,0.12),rgba(20,30,60,0.4))!important;backdrop-filter:blur(20px) saturate(160%)!important;border:1px solid rgba(77,140,255,0.35)!important;border-radius:16px!important;box-shadow:0 0 24px rgba(77,140,255,0.25),0 8px 28px rgba(0,0,0,0.45)!important}";
+		css.textContent = [
+			".tools-component,.component.tools-component{",
+			"display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;",
+			"align-items:center!important;height:auto!important;max-height:calc(100vh - 120px)!important;",
+			"width:58px!important;min-width:58px!important;overflow-x:hidden!important;overflow-y:auto!important;",
+			"padding:8px 4px!important}",
+			".tools-component .tools,.tools{",
+			"display:flex!important;flex-flow:row wrap!important;justify-content:center!important;",
+			"width:50px!important;max-width:50px!important;height:auto!important;max-height:none!important;",
+			"overflow:visible!important}",
+			".tools-component .tool-options,.tool-options{",
+			"display:flex!important;flex-direction:column!important;position:relative!important;",
+			"margin:8px 0 4px 0!important;margin-left:0!important;width:44px!important;min-width:44px!important;",
+			"height:70px!important;padding:4px!important;order:99!important;z-index:1!important;",
+			"border-radius:12px!important;border:1px solid rgba(91,155,255,0.35)!important;",
+			"background:rgba(10,14,28,0.65)!important;",
+			"box-shadow:0 0 16px rgba(91,155,255,0.2)!important}"
+		].join("");
 		document.head.appendChild(css);
 	}
 	whenReady(function () {
 		fixToolOptionsLayout(); mountExtras();
 		setTimeout(mountExtras, 600); setTimeout(mountExtras, 1800); setTimeout(fixToolOptionsLayout, 600);
 	});
-	console.info("[void-ui] extras v2");
+	console.info("[void-ui] extras v3 — options bottom, vertical tools");
 })();
