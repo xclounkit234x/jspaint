@@ -1,4 +1,4 @@
-/* VOID LIQUID GLASS v3 + HQ + soft chrome — see previous commits for base; HQ/soft append */
+/* VOID LIQUID GLASS + MoPaint-smooth canvas */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 :root {
 	--void-bg: #02030a; --void-text: #f4f6fb; --void-muted: #9aa6c0; --void-red: #c41e3a;
@@ -48,13 +48,28 @@ body, .jspaint, .menu-button, .menu-item, .status-area, .status-text, .window-ti
 	width: 50px !important; max-width: 50px !important; height: auto !important; overflow: visible !important;
 }
 .tools .tool {
-	position: relative !important; overflow: hidden !important; border: 1px solid transparent !important; outline: none !important;
+	position: relative !important; overflow: visible !important; border: 1px solid transparent !important; outline: none !important;
 	background: rgba(255,255,255,0.06) !important; margin: 1px !important;
 	width: 22px !important; height: 22px !important; border-radius: 8px !important; flex: 0 0 22px !important;
+	transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+.tools .tool.tool-pressed {
+	transform: scale(0.92) !important;
+	background: rgba(91, 155, 255, 0.28) !important;
+	box-shadow: inset 0 0 0 2px rgba(91, 155, 255, 0.85) !important;
 }
 .tools .tool.selected {
-	border: 1px solid rgba(196, 30, 58, 0.85) !important; background: rgba(196, 30, 58, 0.2) !important;
-	box-shadow: 0 0 0 1px rgba(196, 30, 58, 0.35), 0 0 16px rgba(196, 30, 58, 0.55) !important;
+	border: 2px solid #ff3d6e !important;
+	background: rgba(196, 30, 58, 0.38) !important;
+	box-shadow:
+		0 0 0 2px rgba(255, 61, 110, 0.5),
+		0 0 20px rgba(255, 61, 110, 0.8),
+		inset 0 0 12px rgba(255, 61, 110, 0.3) !important;
+	z-index: 6 !important;
+	transform: scale(1.1) !important;
+}
+.tools .tool.selected.tool-pressed {
+	transform: scale(0.96) !important;
 }
 .tools .tool::before, .tools .tool::after { display: none !important; content: none !important; }
 .tools-component .tool-options, .tool-options {
@@ -70,8 +85,8 @@ body, .jspaint, .menu-button, .menu-item, .status-area, .status-text, .window-ti
 .colors-component { padding: 10px !important; margin: 6px !important; }
 .color-button { width: 18px !important; height: 18px !important; border-radius: 6px !important; }
 .canvas-area {
-	background: #05070f !important; border-radius: 16px !important; margin: 6px !important; overflow: hidden !important;
-	box-shadow: inset 0 0 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(91,155,255,0.15) !important;
+	background: #1a1e28 !important; border-radius: 16px !important; margin: 6px !important; overflow: hidden !important;
+	box-shadow: inset 0 0 50px rgba(0,0,0,0.55), 0 0 0 1px rgba(91,155,255,0.15) !important;
 }
 .os-window { border-radius: 16px !important; overflow: hidden !important; }
 .os-window .window-titlebar {
@@ -79,13 +94,26 @@ body, .jspaint, .menu-button, .menu-item, .status-area, .status-text, .window-ti
 }
 .os-window button { border-radius: 999px !important; padding: 6px 14px !important; }
 input, select, textarea { background: rgba(0,0,0,0.4) !important; border-radius: 10px !important; color: var(--void-text) !important; }
-/* HQ canvas */
-.main-canvas, .canvas-area canvas, .selection > canvas, .helper-layer > canvas {
-	image-rendering: auto !important; image-rendering: high-quality !important;
+/* MoPaint-style SMOOTH canvas (not pixel-crisp) */
+.main-canvas,
+.canvas-area canvas,
+.selection > canvas,
+.helper-layer > canvas,
+canvas {
+	image-rendering: auto !important;
+	image-rendering: high-quality !important;
+	image-rendering: smooth !important;
+	-ms-interpolation-mode: bicubic !important;
 }
-.inset-deep, .status-area, .component-area, .window-content {
-	border-radius: 14px !important;
+.canvas-area.disable-aa-for-things-at-main-canvas-scale .main-canvas,
+.disable-aa-for-things-at-main-canvas-scale canvas {
+	image-rendering: auto !important;
+	image-rendering: high-quality !important;
 }
+.main-canvas {
+	box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06) !important;
+}
+.inset-deep, .status-area, .component-area, .window-content { border-radius: 14px !important; }
 .inset-deep {
 	box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), inset 0 8px 24px rgba(0,0,0,0.35) !important;
 	border: none !important;
@@ -93,6 +121,10 @@ input, select, textarea { background: rgba(0,0,0,0.4) !important; border-radius:
 .tools .tool:nth-child(n+17) {
 	box-shadow: 0 0 8px rgba(91,155,255,0.35) !important;
 	border: 1px solid rgba(91,155,255,0.35) !important;
+}
+.tools .tool:nth-child(n+17).selected {
+	border: 2px solid #ff3d6e !important;
+	box-shadow: 0 0 0 2px rgba(255, 61, 110, 0.5), 0 0 20px rgba(255, 61, 110, 0.8) !important;
 }
 #void-palette-load, #void-history-open {
 	cursor: pointer; padding: 8px 12px; border-radius: 999px !important;
