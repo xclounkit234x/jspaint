@@ -1,4 +1,3 @@
-// Higher quality drawing defaults
 (function () {
 	function apply() {
 		try {
