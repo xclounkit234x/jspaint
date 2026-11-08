@@ -1,23 +1,46 @@
+// MoPaint-style smooth canvas (anti-aliased, not pixel-crisp)
 (function () {
-	function apply() {
+	"use strict";
+	function forceSmoothCtx(ctx) {
+		if (!ctx) return;
 		try {
-			if (window.main_ctx) {
-				main_ctx.imageSmoothingEnabled = true;
-				if ("imageSmoothingQuality" in main_ctx) main_ctx.imageSmoothingQuality = "high";
-			}
+			ctx.imageSmoothingEnabled = true;
+			if ("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality = "high";
+			ctx.disable_image_smoothing = function () {
+				this.imageSmoothingEnabled = true;
+				if ("imageSmoothingQuality" in this) this.imageSmoothingQuality = "high";
+			};
+			ctx.enable_image_smoothing = function () {
+				this.imageSmoothingEnabled = true;
+				if ("imageSmoothingQuality" in this) this.imageSmoothingQuality = "high";
+			};
+		} catch (e) {}
+	}
+	function applyAll() {
+		try {
+			if (window.main_ctx) forceSmoothCtx(window.main_ctx);
 			document.querySelectorAll("canvas").forEach(function (c) {
 				try {
-					const ctx = c.getContext("2d");
-					if (ctx) {
-						ctx.imageSmoothingEnabled = true;
-						if ("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality = "high";
-					}
+					forceSmoothCtx(c.getContext("2d"));
+					c.style.imageRendering = "auto";
 				} catch (e) {}
+			});
+			document.querySelectorAll(".disable-aa-for-things-at-main-canvas-scale").forEach(function (el) {
+				el.classList.remove("disable-aa-for-things-at-main-canvas-scale");
 			});
 		} catch (e) {}
 	}
-	if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(apply, 200); });
-	else setTimeout(apply, 200);
-	setTimeout(apply, 1500);
-	console.info("[void-ui] high quality smoothing on");
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", function () {
+			setTimeout(applyAll, 100);
+			setTimeout(applyAll, 500);
+			setTimeout(applyAll, 2000);
+		});
+	} else {
+		setTimeout(applyAll, 100);
+		setTimeout(applyAll, 500);
+		setTimeout(applyAll, 2000);
+	}
+	setInterval(applyAll, 4000);
+	console.info("[void-ui] MoPaint-style smooth canvas mode");
 })();
