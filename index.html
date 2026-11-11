@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>JS Paint — Void Liquid Glass</title>
+	<title>XK Paint</title>
 	<meta http-equiv="Content-Security-Policy" content="
 		default-src 'self';
 		script-src 'self' blob: https://cdn.jsdelivr.net https://jspaint.firebaseio.com https://www.youtube.com;
@@ -21,11 +21,13 @@
 	<link href="styles/upgrade-overrides.css" rel="stylesheet" type="text/css">
 	<link href="styles/void-neon.css" rel="stylesheet" type="text/css">
 	<link href="styles/void-tool-icons.css" rel="stylesheet" type="text/css">
+	<link href="styles/void-tabs.css" rel="stylesheet" type="text/css">
 	<link rel="apple-touch-icon" href="images/icons/apple-icon-180x180.png">
 	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="manifest" href="manifest.webmanifest">
 	<meta name="theme-color" content="#03040a">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta name="description" content="XK Paint — modern offline-capable paint app. https://xkpaint.pages.dev">
 	<script src="src/error-handling-basic.js"></script>
 	<script type="module" src="src/theme.js"></script>
 	<script>
@@ -40,8 +42,8 @@
 		<div id="about-paint-header">
 			<img src="images/icons/128x128.png" width="128" height="128" id="about-paint-icon" alt="" />
 			<div id="about-paint-beside-icon">
-				<h1 id="jspaint-project-name">JS Paint</h1>
-				<div id="jspaint-version">Void Liquid Glass</div>
+				<h1 id="jspaint-project-name">XK Paint</h1>
+				<div id="jspaint-version">xkpaint.pages.dev</div>
 			</div>
 		</div>
 	</div>
@@ -99,5 +101,7 @@
 	<script type="module" src="src/vaporwave-fun.js"></script>
 	<script src="src/void-quality.js"></script>
 	<script src="src/void-extras.js"></script>
+	<script src="src/void-vfs.js"></script>
+	<script src="src/void-tabs.js"></script>
 </body>
 </html>
