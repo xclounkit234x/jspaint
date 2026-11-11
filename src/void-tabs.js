@@ -4,7 +4,8 @@
 
 	const tabs = [];
 	let activeId = null;
-	const memory = {}; // id -> { blob, name, width, height, dirty }
+	const memory = {};
+	let booted = false;
 
 	function el(tag, cls, html) {
 		const n = document.createElement(tag);
@@ -13,44 +14,58 @@
 		return n;
 	}
 
+	function appReady() {
+		return !!(window.__xkpaint_app_ready && window.main_canvas && window.main_ctx && window.$canvas_area);
+	}
+
 	function canvasReady() {
 		return !!(window.main_canvas && window.main_ctx);
 	}
 
 	function captureBlob() {
 		return new Promise(function (resolve) {
-			window.main_canvas.toBlob(function (b) { resolve(b); }, "image/png");
+			try {
+				window.main_canvas.toBlob(function (b) { resolve(b); }, "image/png");
+			} catch (e) {
+				resolve(null);
+			}
 		});
 	}
 
 	async function applyBlob(blob) {
 		if (!blob || !canvasReady()) return;
-		const bmp = await createImageBitmap(blob);
-		const w = bmp.width, h = bmp.height;
 		try {
-			if (typeof window.resize_canvas_without_saving_dimensions === "function") {
-				window.resize_canvas_without_saving_dimensions(w, h);
-			} else if (typeof window.resize_canvas_and_save_dimensions === "function") {
-				window.resize_canvas_and_save_dimensions(w, h);
-			} else {
+			const bmp = await createImageBitmap(blob);
+			const w = bmp.width, h = bmp.height;
+			try {
+				if (typeof window.resize_canvas_without_saving_dimensions === "function") {
+					window.resize_canvas_without_saving_dimensions(w, h);
+				} else if (typeof window.resize_canvas_and_save_dimensions === "function") {
+					window.resize_canvas_and_save_dimensions(w, h);
+				} else {
+					window.main_canvas.width = w;
+					window.main_canvas.height = h;
+				}
+			} catch (_) {
 				window.main_canvas.width = w;
 				window.main_canvas.height = h;
 			}
-		} catch (_) {
-			window.main_canvas.width = w;
-			window.main_canvas.height = h;
+			window.main_ctx.imageSmoothingEnabled = true;
+			window.main_ctx.drawImage(bmp, 0, 0);
+			if (bmp.close) bmp.close();
+			try {
+				if (window.$canvas_area) window.$canvas_area.trigger("resize");
+				if (window.$G) window.$G.triggerHandler("resize");
+			} catch (_) {}
+		} catch (err) {
+			console.warn("[xkpaint] applyBlob failed", err);
 		}
-		window.main_ctx.imageSmoothingEnabled = true;
-		window.main_ctx.drawImage(bmp, 0, 0);
-		if (bmp.close) bmp.close();
-		try {
-			if (window.$G) window.$G.triggerHandler("resize");
-		} catch (_) {}
 	}
 
 	async function snapshotActive() {
 		if (!activeId || !canvasReady()) return;
 		const blob = await captureBlob();
+		if (!blob) return;
 		const t = tabs.find(function (x) { return x.id === activeId; });
 		memory[activeId] = {
 			blob: blob,
@@ -65,6 +80,7 @@
 		const bar = document.getElementById("xk-tab-bar");
 		if (!bar) return;
 		const list = bar.querySelector(".xk-tabs");
+		if (!list) return;
 		list.innerHTML = "";
 		tabs.forEach(function (t) {
 			const btn = el("button", "xk-tab" + (t.id === activeId ? " active" : ""));
@@ -85,7 +101,7 @@
 	}
 
 	async function switchTab(id) {
-		if (id === activeId) return;
+		if (id === activeId || !appReady()) return;
 		await snapshotActive();
 		activeId = id;
 		const mem = memory[id];
@@ -97,9 +113,7 @@
 		const id = "tab_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
 		const t = { id: id, name: name || "Untitled", dirty: !blob, vfsId: null };
 		tabs.push(t);
-		if (blob) {
-			memory[id] = { blob: blob, name: t.name, dirty: false };
-		}
+		if (blob) memory[id] = { blob: blob, name: t.name, dirty: false };
 		return t;
 	}
 
@@ -119,10 +133,10 @@
 	}
 
 	async function addBlankTab() {
+		if (!appReady()) return;
 		await snapshotActive();
 		const t = newTab("Untitled");
 		activeId = t.id;
-		// clear canvas to white
 		if (canvasReady()) {
 			try {
 				const w = window.main_canvas.width, h = window.main_canvas.height;
@@ -142,14 +156,17 @@
 	}
 
 	async function saveActiveToVFS(name) {
-		if (!window.XKPaintVFS || !canvasReady()) return null;
+		if (!window.XKPaintVFS || !canvasReady()) {
+			alert("App not ready yet — try again in a moment.");
+			return null;
+		}
 		await snapshotActive();
 		const t = tabs.find(function (x) { return x.id === activeId; });
-		const n = name || (t && t.name) || "drawing.png";
-		if (!/\.png$/i.test(n)) name = n + ".png"; else name = n;
+		let n = name || (t && t.name) || "drawing.png";
+		if (!/\.png$/i.test(n)) n = n + ".png";
 		const row = await window.XKPaintVFS.saveCanvas(window.main_canvas, {
 			id: t && t.vfsId,
-			name: name,
+			name: n,
 		});
 		if (t) {
 			t.name = row.name;
@@ -161,7 +178,7 @@
 	}
 
 	async function openFromVFS(id) {
-		if (!window.XKPaintVFS) return;
+		if (!window.XKPaintVFS || !appReady()) return;
 		const file = await window.XKPaintVFS.get(id);
 		if (!file || !file.blob) return;
 		await snapshotActive();
@@ -208,7 +225,11 @@
 	async function refreshVFSList() {
 		const list = document.getElementById("xk-vfs-list");
 		const usageEl = document.getElementById("xk-vfs-usage");
-		if (!list || !window.XKPaintVFS) return;
+		if (!list) return;
+		if (!window.XKPaintVFS) {
+			list.innerHTML = "<div class='xk-vfs-empty'>VFS not loaded.</div>";
+			return;
+		}
 		list.innerHTML = "<div class='xk-vfs-empty'>Loading…</div>";
 		try {
 			const files = await window.XKPaintVFS.listAll();
@@ -229,7 +250,7 @@
 				if (f.thumb) {
 					const img = document.createElement("img");
 					img.src = URL.createObjectURL(f.thumb);
-					img.onload = function () { URL.revokeObjectURL(img.src); };
+					img.onload = function () { try { URL.revokeObjectURL(img.src); } catch (_) {} };
 					thumb.appendChild(img);
 				}
 				const meta = el("div", "xk-vfs-meta");
@@ -272,9 +293,12 @@
 			'<button type="button" id="xk-vfs-toggle" title="Virtual Filesystem">Files</button>' +
 			'<span id="xk-offline-badge" class="xk-offline-badge" title="Offline status">…</span>' +
 			"</div>";
-		const menus = document.querySelector(".menus") || document.querySelector(".jspaint") || document.body;
-		if (menus.parentNode) {
+		const menus = document.querySelector(".menus");
+		const app = document.querySelector(".jspaint") || document.body;
+		if (menus && menus.parentNode) {
 			menus.parentNode.insertBefore(bar, menus.nextSibling);
+		} else if (app.firstChild) {
+			app.insertBefore(bar, app.firstChild);
 		} else {
 			document.body.prepend(bar);
 		}
@@ -292,6 +316,9 @@
 	}
 
 	function boot() {
+		if (booted) return;
+		if (!appReady()) return;
+		booted = true;
 		buildChrome();
 		if (!tabs.length) {
 			const t = newTab("Untitled");
@@ -299,7 +326,6 @@
 		}
 		renderTabs();
 
-		// dirty tracking
 		document.addEventListener("pointerup", function (e) {
 			if (e.target && e.target.closest && e.target.closest(".canvas-area, canvas")) markDirty();
 		}, true);
@@ -307,11 +333,7 @@
 		window.addEventListener("online", updateOfflineBadge);
 		window.addEventListener("offline", updateOfflineBadge);
 
-		// keyboard: Ctrl+S save to VFS, Ctrl+T new tab
 		window.addEventListener("keydown", function (e) {
-			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s" && !e.shiftKey) {
-				// don't block native save always — only if alt held? Use Ctrl+Shift+S for VFS
-			}
 			if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "s") {
 				e.preventDefault();
 				const name = prompt("Save to Virtual Filesystem as", (tabs.find(function (t) { return t.id === activeId; }) || {}).name || "drawing.png");
@@ -327,17 +349,26 @@
 	}
 
 	function waitBoot() {
-		if (document.querySelector(".menus") || canvasReady()) {
+		if (appReady()) {
 			boot();
-		} else {
-			setTimeout(waitBoot, 300);
+			return;
 		}
+		// Fallback: if app set $canvas_area but not the ready flag yet
+		if (window.$canvas_area && window.main_canvas && window.main_ctx) {
+			window.__xkpaint_app_ready = true;
+			boot();
+			return;
+		}
+		setTimeout(waitBoot, 150);
 	}
 
-	if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(waitBoot, 400); });
-	else setTimeout(waitBoot, 400);
+	window.addEventListener("xkpaint-ready", function () { boot(); });
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", function () { setTimeout(waitBoot, 200); });
+	} else {
+		setTimeout(waitBoot, 200);
+	}
 
-	// Register service worker
 	if ("serviceWorker" in navigator) {
 		window.addEventListener("load", function () {
 			navigator.serviceWorker.register("./sw.js").then(function (reg) {
