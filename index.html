@@ -30,12 +30,6 @@
 	<meta name="description" content="XK Paint — modern offline-capable paint app. https://xkpaint.pages.dev">
 	<script src="src/error-handling-basic.js"></script>
 	<script type="module" src="src/theme.js"></script>
-	<script>
-		try {
-			localStorage.setItem("jspaint theme", "modern-dark.css");
-			localStorage.setItem("jspaint disable seasonal theme", "true");
-		} catch (e) {}
-	</script>
 </head>
 <body class="void-neon">
 	<div id="about-paint" style="display: none">
@@ -96,7 +90,6 @@
 	<script type="module" src="src/eye-gaze-mode.js"></script>
 	<script defer src="src/app-state.js"></script>
 	<script type="module" src="src/app-entry.js"></script>
-	<script type="module" src="src/sessions.js"></script>
 	<script type="module" src="src/konami.js"></script>
 	<script type="module" src="src/vaporwave-fun.js"></script>
 	<script src="src/void-quality.js"></script>
